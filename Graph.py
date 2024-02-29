@@ -11,7 +11,7 @@ def generate_random_graph(vertices, edges):
     for i in range(edges):
         from_vertex = random.randint(0, vertices - 1)
         to_vertex = random.randint(0, vertices - 1)
-        cost = random.randint(0, 1001)
+        cost = random.randint(0, 101)
 
         # In the case that the edge already exists we need to re-roll
         # until we get one that has not been generated before
@@ -21,6 +21,26 @@ def generate_random_graph(vertices, edges):
 
         g.add_edge(from_vertex, to_vertex, cost)
 
+    return g
+
+
+def import_graph(path):
+    g = Graph()
+    f = open(path, "r")
+
+    lines = f.readlines()
+    vertices = int(lines[0].split(" ")[0])
+    edges = int(lines[0].split(" ")[1])
+
+    for i in range(vertices):
+        g.add_vertex(i)
+    for i in range(1, edges + 1):
+        from_vertex = int(lines[i].split(" ")[0])
+        to_vertex = int(lines[i].split(" ")[1])
+        cost = int(lines[i].split(" ")[2])
+        g.add_edge(from_vertex, to_vertex, cost)
+
+    f.close()
     return g
 
 
@@ -126,7 +146,7 @@ class Graph:
             raise Exception(f"The vertex {from_vertex} is not a part of the graph.")
         if not self.is_vertex(to_vertex):
             raise Exception(f"The vertex {to_vertex} is not a part of the graph.")
-        if self.is_edge(from_vertex, to_vertex):
+        if not self.is_edge(from_vertex, to_vertex):
             raise Exception(f"The edge from {from_vertex} to {to_vertex} is not a part of the graph.")
 
         self.__outbound_neighbours[from_vertex].remove(to_vertex)
@@ -137,10 +157,12 @@ class Graph:
         return deepcopy(self)
 
 
-graph = generate_random_graph(100, 10)
-for i in range(100):
-    if graph.count_out_deg(i) > 0:
+graph = import_graph(r"D:\Python\graphs_1\graph1k.txt")
+
+vertices = graph.count_vertices()
+for i in range(vertices):
+    if graph.is_vertex(i) and graph.count_out_deg(i) > 0:
         print(f"{i}: ", end = "")
         for j in graph.outbound_neighbours_iterator(i):
-            print(f"{j}({graph.get_edge_cost(i, j)}) ", end = "")
+            print(f"{j}({graph.get_edge_cost(i, j)}), ", end = "")
         print()
