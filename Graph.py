@@ -1,4 +1,27 @@
+import random
 from copy import deepcopy
+
+
+def generate_random_graph(vertices, edges):
+    g = Graph()
+
+    for i in range(vertices):
+        g.add_vertex(i)
+
+    for i in range(edges):
+        from_vertex = random.randint(0, vertices - 1)
+        to_vertex = random.randint(0, vertices - 1)
+        cost = random.randint(0, 1001)
+
+        # In the case that the edge already exists we need to re-roll
+        # until we get one that has not been generated before
+        while g.is_edge(from_vertex, to_vertex):
+            from_vertex = random.randint(0, vertices - 1)
+            to_vertex = random.randint(0, vertices - 1)
+
+        g.add_edge(from_vertex, to_vertex, cost)
+
+    return g
 
 
 class Graph:
@@ -92,7 +115,7 @@ class Graph:
         if not self.is_vertex(to_vertex):
             raise Exception(f"The vertex {to_vertex} is not a part of the graph.")
         if self.is_edge(from_vertex, to_vertex):
-            raise Exception(f"The edge from {from_vertex} to {to_vertex} is not a part of the graph.")
+            raise Exception(f"The edge from {from_vertex} to {to_vertex} is already a part of the graph.")
 
         self.__outbound_neighbours[from_vertex].add(to_vertex)
         self.__inbound_neighbours[to_vertex].add(from_vertex)
@@ -114,4 +137,10 @@ class Graph:
         return deepcopy(self)
 
 
-graph = Graph()
+graph = generate_random_graph(100, 10)
+for i in range(100):
+    if graph.count_out_deg(i) > 0:
+        print(f"{i}: ", end = "")
+        for j in graph.outbound_neighbours_iterator(i):
+            print(f"{j}({graph.get_edge_cost(i, j)}) ", end = "")
+        print()
