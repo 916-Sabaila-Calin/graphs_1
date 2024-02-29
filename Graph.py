@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class Graph:
     def __init__(self):
         self.__vertices = set()
@@ -73,9 +76,9 @@ class Graph:
 
         edges_to_remove = []
         for elem in self.__outbound_neighbours[vertex]:
-            edges_to_remove.append(vertex, elem)
+            edges_to_remove.append((vertex, elem))
         for elem in self.__inbound_neighbours[vertex]:
-            edges_to_remove.append(elem, vertex)
+            edges_to_remove.append((elem, vertex))
         for edge in edges_to_remove:
             self.erase_edge(edge[0], edge[1])
 
@@ -106,6 +109,9 @@ class Graph:
         self.__outbound_neighbours[from_vertex].remove(to_vertex)
         self.__inbound_neighbours[to_vertex].remove(from_vertex)
         del self.__costs[(from_vertex, to_vertex)]
+
+    def copy(self):
+        return deepcopy(self)
 
 
 graph = Graph()
