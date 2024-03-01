@@ -44,6 +44,21 @@ def import_graph(path):
     return g
 
 
+def export_graph(g, path):
+    f = open(path, "w")
+
+    vertices = g.count_vertices()
+    edges = g.count_edges()
+    f.write(f"{vertices} {edges}\n")
+
+    for i in range(vertices):
+        if g.is_vertex(i) and g.count_out_deg(i) > 0:
+            for j in graph.outbound_neighbours_iterator(i):
+                f.write(f"{i} {j} {graph.get_edge_cost(i, j)}\n")
+
+    f.close()
+
+
 class Graph:
     def __init__(self):
         self.__vertices = set()
@@ -158,11 +173,4 @@ class Graph:
 
 
 graph = import_graph(r"D:\Python\graphs_1\graph1k.txt")
-
-vertices = graph.count_vertices()
-for i in range(vertices):
-    if graph.is_vertex(i) and graph.count_out_deg(i) > 0:
-        print(f"{i}: ", end = "")
-        for j in graph.outbound_neighbours_iterator(i):
-            print(f"{j}({graph.get_edge_cost(i, j)}), ", end = "")
-        print()
+export_graph(graph, r"D:\Python\graphs_1\test.txt")
