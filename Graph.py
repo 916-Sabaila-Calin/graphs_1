@@ -174,5 +174,5 @@ class Graph:
         return deepcopy(self)
 
 
-graph = import_graph(r"D:\Python\graphs_1\graph1m.txt")
+graph = import_graph(r"D:\Python\graphs_1\graph1k.txt")
 export_graph(graph, r"D:\Python\graphs_1\test.txt")
