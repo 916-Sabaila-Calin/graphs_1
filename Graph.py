@@ -174,5 +174,5 @@ class Graph:
         return deepcopy(self)
 
 
-graph = generate_random_graph(6, 40)
-export_graph(graph, r"D:\Python\graphs_1\random_graph2.txt")
+graph = import_graph(r"D:\Python\graphs_1\graph1m.txt")
+export_graph(graph, r"D:\Python\graphs_1\test.txt")
