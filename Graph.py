@@ -54,9 +54,9 @@ def export_graph(g, path):
     edges = g.count_edges()
     f.write(f"{vertices} {edges}\n")
 
-    for vertex in graph.vertices_iterator():
-        for neighbour in graph.outbound_neighbours_iterator(vertex):
-            f.write(f"{vertex} {neighbour} {graph.get_edge_cost(vertex, neighbour)}\n")
+    for vertex in g.vertices_iterator():
+        for neighbour in g.outbound_neighbours_iterator(vertex):
+            f.write(f"{vertex} {neighbour} {g.get_edge_cost(vertex, neighbour)}\n")
 
     f.close()
 
@@ -67,6 +67,15 @@ class Graph:
         self.__outbound_neighbours = dict()
         self.__inbound_neighbours = dict()
         self.__costs = dict()
+
+    def __str__(self):
+        string = ""
+        for vertex in self.vertices_iterator():
+            string += f"{vertex}: "
+            for neighbour in self.outbound_neighbours_iterator(vertex):
+                string += f"{neighbour}({self.get_edge_cost(vertex, neighbour)}) "
+            string += "\n"
+        return string
 
     def count_vertices(self):
         return len(self.__vertices)
@@ -173,6 +182,9 @@ class Graph:
     def copy(self):
         return deepcopy(self)
 
+    def empty(self):
+        self.__vertices = set()
+        self.__outbound_neighbours = dict()
+        self.__inbound_neighbours = dict()
+        self.__costs = dict()
 
-graph = import_graph(r"D:\Python\graphs_1\graph1k.txt")
-export_graph(graph, r"D:\Python\graphs_1\test.txt")
