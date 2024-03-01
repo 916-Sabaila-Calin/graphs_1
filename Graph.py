@@ -3,6 +3,9 @@ from copy import deepcopy
 
 
 def generate_random_graph(vertices, edges):
+    if edges > vertices ** 2:
+        edges = vertices ** 2
+
     g = Graph()
 
     for i in range(vertices):
@@ -51,20 +54,19 @@ def export_graph(g, path):
     edges = g.count_edges()
     f.write(f"{vertices} {edges}\n")
 
-    for i in range(vertices):
-        if g.is_vertex(i) and g.count_out_deg(i) > 0:
-            for j in graph.outbound_neighbours_iterator(i):
-                f.write(f"{i} {j} {graph.get_edge_cost(i, j)}\n")
+    for vertex in graph.vertices_iterator():
+        for neighbour in graph.outbound_neighbours_iterator(vertex):
+            f.write(f"{vertex} {neighbour} {graph.get_edge_cost(vertex, neighbour)}\n")
 
     f.close()
 
 
 class Graph:
     def __init__(self):
-        self.__vertices = []
-        self.__outbound_neighbours = {}
-        self.__inbound_neighbours = {}
-        self.__costs = {}
+        self.__vertices = set()
+        self.__outbound_neighbours = dict()
+        self.__inbound_neighbours = dict()
+        self.__costs = dict()
 
     def count_vertices(self):
         return len(self.__vertices)
@@ -124,9 +126,9 @@ class Graph:
         if self.is_vertex(vertex):
             raise Exception(f"The vertex {vertex} is already a part of the graph.")
 
-        self.__vertices.append(vertex)
-        self.__outbound_neighbours[vertex] = []
-        self.__inbound_neighbours[vertex] = []
+        self.__vertices.add(vertex)
+        self.__outbound_neighbours[vertex] = set()
+        self.__inbound_neighbours[vertex] = set()
 
     def erase_vertex(self, vertex):
         if not self.is_vertex(vertex):
@@ -152,8 +154,8 @@ class Graph:
         if self.is_edge(from_vertex, to_vertex):
             raise Exception(f"The edge from {from_vertex} to {to_vertex} is already a part of the graph.")
 
-        self.__outbound_neighbours[from_vertex].append(to_vertex)
-        self.__inbound_neighbours[to_vertex].append(from_vertex)
+        self.__outbound_neighbours[from_vertex].add(to_vertex)
+        self.__inbound_neighbours[to_vertex].add(from_vertex)
         self.__costs[(from_vertex, to_vertex)] = cost
 
     def erase_edge(self, from_vertex, to_vertex):
@@ -172,5 +174,5 @@ class Graph:
         return deepcopy(self)
 
 
-graph = import_graph(r"D:\Python\graphs_1\graph1k.txt")
-export_graph(graph, r"D:\Python\graphs_1\test.txt")
+graph = generate_random_graph(6, 40)
+export_graph(graph, r"D:\Python\graphs_1\random_graph2.txt")
