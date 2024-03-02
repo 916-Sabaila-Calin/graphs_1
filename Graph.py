@@ -139,17 +139,17 @@ class Graph:
         self.__outbound_neighbours[vertex] = set()
         self.__inbound_neighbours[vertex] = set()
 
-    def erase_vertex(self, vertex):
+    def remove_vertex(self, vertex):
         if not self.is_vertex(vertex):
             raise Exception(f"The vertex {vertex} is not a part of the graph.")
 
-        edges_to_remove = []
+        edges_to_remove = set()
         for elem in self.__outbound_neighbours[vertex]:
-            edges_to_remove.append((vertex, elem))
+            edges_to_remove.add((vertex, elem))
         for elem in self.__inbound_neighbours[vertex]:
-            edges_to_remove.append((elem, vertex))
+            edges_to_remove.add((elem, vertex))
         for edge in edges_to_remove:
-            self.erase_edge(edge[0], edge[1])
+            self.remove_edge(edge[0], edge[1])
 
         del self.__outbound_neighbours[vertex]
         del self.__inbound_neighbours[vertex]
@@ -167,7 +167,7 @@ class Graph:
         self.__inbound_neighbours[to_vertex].add(from_vertex)
         self.__costs[(from_vertex, to_vertex)] = cost
 
-    def erase_edge(self, from_vertex, to_vertex):
+    def remove_edge(self, from_vertex, to_vertex):
         if not self.is_vertex(from_vertex):
             raise Exception(f"The vertex {from_vertex} is not a part of the graph.")
         if not self.is_vertex(to_vertex):
@@ -187,4 +187,3 @@ class Graph:
         self.__outbound_neighbours = dict()
         self.__inbound_neighbours = dict()
         self.__costs = dict()
-

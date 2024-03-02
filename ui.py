@@ -17,6 +17,72 @@ class UI:
         print("Type \"exit\" to close the program.")
 
     @staticmethod
+    def print_edge_menu():
+        print("")
+        print("Press 1 to add an edge.")
+        print("Press 2 to remove an edge.")
+        print("Press 3 to check if an edge exists.")
+        print("Press 4 to print the number of edges.")
+        print("Press 5 to print the edges.")
+        print("Press 6 to print the cost of an edge.")
+        print("Press 7 to set the cost of an edge.")
+
+    def edges_menu(self):
+        commands = {"1": self.add_edge,
+                    "2": self.remove_edge,
+                    "3": self.check_if_edge_exists,
+                    "4": self.count_edges,
+                    "5": self.print_edges,
+                    "6": self.print_cost_of_edge,
+                    "7": self.update_cost_of_edge}
+
+        self.print_edge_menu()
+        option = input("> ")
+
+        if option in commands:
+            commands[option]()
+        else:
+            raise Exception("Invalid input.")
+
+    def add_edge(self):
+        from_vertex = int(input("vertex from = "))
+        to_vertex = int(input("vertex to = "))
+        cost = int(input("cost = "))
+        self.__graph.add_edge(from_vertex, to_vertex, cost)
+
+    def remove_edge(self):
+        from_vertex = int(input("vertex from = "))
+        to_vertex = int(input("vertex to = "))
+        self.__graph.remove_edge(from_vertex, to_vertex)
+
+    def check_if_edge_exists(self):
+        from_vertex = int(input("vertex from = "))
+        to_vertex = int(input("vertex to = "))
+        if self.__graph.is_edge(from_vertex, to_vertex):
+            print(f"The edge from {from_vertex} to {to_vertex} is a part of the graph.")
+        else:
+            print(f"The edge from {from_vertex} to {to_vertex} is not a part of the graph.")
+
+    def count_edges(self):
+        print(f"The graph has {self.__graph.count_edges()} edges.")
+
+    def print_edges(self):
+        for vertex in self.__graph.vertices_iterator():
+            for neighbour in self.__graph.outbound_neighbours_iterator(vertex):
+                print(f"({vertex}, {neighbour}) ", end = "")
+
+    def print_cost_of_edge(self):
+        from_vertex = int(input("vertex from = "))
+        to_vertex = int(input("vertex to = "))
+        print(f"The cost of the edge from {from_vertex} to {to_vertex} is {self.__graph.get_edge_cost(from_vertex, to_vertex)}.")
+
+    def update_cost_of_edge(self):
+        from_vertex = int(input("vertex from = "))
+        to_vertex = int(input("vertex to = "))
+        cost = int(input("cost = "))
+        self.__graph.set_edge_cost(from_vertex, to_vertex, cost)
+
+    @staticmethod
     def print_vertex_menu():
         print("")
         print("Press 1 to add a vertex.")
@@ -28,10 +94,6 @@ class UI:
         print("Press 7 to print the indegree of a vertex.")
         print("Press 8 to print the outbound neighbours of a vertex.")
         print("Press 9 to print the inbound neighbours of a vertex.")
-
-    @staticmethod
-    def print_edge_menu():
-        pass
 
     def vertex_menu(self):
         commands = {"1": self.add_vertex,
@@ -94,7 +156,7 @@ class UI:
 
     def run(self):
         commands = {"1": self.vertex_menu,
-                    "2": "",
+                    "2": self.edges_menu,
                     "3": self.generate_graph,
                     "4": self.import_graph,
                     "5": self.export_graph,
